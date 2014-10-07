@@ -1,4 +1,5 @@
 .idea/
+development.ini
 default_value_proposed/
 PyNews.sqlite
 # Byte-compiled / optimized / DLL files
