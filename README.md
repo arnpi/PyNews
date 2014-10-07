@@ -1,0 +1,4 @@
+PyNews
+======
+
+Rss anywhere
