@@ -1,6 +1,7 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 
+from wsgicors import CORS
 from .models import (
     DBSession,
     Base,
@@ -75,4 +76,5 @@ def main(global_config, **settings):
     my_session_factory = SignedCookieSessionFactory('itsaseekreet')
 
     config.set_session_factory(my_session_factory)
-    return config.make_wsgi_app()
+    # return config.make_wsgi_app()
+    return CORS(config.make_wsgi_app(),header="*", methods="*", maxage="180", origin = "*")

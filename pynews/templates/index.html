@@ -1,0 +1,360 @@
+<!doctype html>
+<html ng-app="myTestApp" >
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>(•ิ_•ิ)</title>
+    <link rel="stylesheet" href="static/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link href="static/navbar-fixed-top.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/pynews.css" />
+</head>
+<body>
+    <div class="container">
+        <div ng-controller="loginController" class="navbar navbar-default navbar-fixed-top navbar-inverse" 
+		role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <a  onmouseleave="this.innerHTML = this.innerHTML.replace(' ¸','_')" onmouseover="this.innerHTML = this.innerHTML.replace('_',' ¸')" class="navbar-brand" href="#">(•ิ_•ิ)</a>
+                </div>
+                <div class="navbar-collapse collapse"  >
+                    <ul  ng-model="status" ng-class="{selected: status == '0'} " class="nav navbar-nav" >
+                        <li><a data-toggle="collapse" data-target=".navbar-collapse" href="#" 
+					ng-click="showDiv('meteo')">Meteo</a>
+			</li>
+                        <li><a data-toggle="collapse" data-target=".navbar-collapse" href="#" 
+					ng-click="showDiv('note')">Notes</a></li>
+                        <li><a data-toggle="collapse" data-target=".navbar-collapse" href="#" 
+					ng-click="showDiv('mail')">Mail</a>
+			</li>
+                        <li><a data-toggle="collapse" data-target=".navbar-collapse" href="#" 
+					ng-click="showDiv('twitter')">Twitter</a>
+			</li>
+                        <li><a data-toggle="collapse" data-target=".navbar-collapse" href="#" 
+                    ng-click="showDiv('news')">News</a>
+            </li>
+                        <li><a data-toggle="collapse" data-target=".navbar-collapse" href="#" 
+                             ng-class="{selected: status == '2'} "
+                    ng-click="showDiv('admin')">Admin</a>
+            </li>
+                    </ul>
+                    <div class="nav navbar-nav navbar-right">
+                        <!-- LOGIN -->
+                        <span class="navbar-brand"  id="login">
+                        <input ng-class="{selected: status == '1' || status == '2' } " placeholder="Login" ng-model="login" autofocus>
+                        <input ng-class="{selected: status == '1' || status == '2' } " placeholder="Password" ng-model="password" autofocus>
+                        <button class="btn btn-primary btn-xs" ng-class="{selected: status == '1' || status == '2' } " ng-click="loginSend()"
+				            ng-model="status">Login
+			             </button>
+                        <button class="btn btn-danger btn-xs" ng-class="{selected: status == '0'} " ng-click="logoutSend()"
+				            ng-model="status">Logout {{status_login}}
+                        </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div  ng-controller="loginController" ng-model="status" ng-class="{selected: status == '0'} ">
+
+            <!-- METEO -->
+            <section  ng-show="showMeteo"  >
+                <div id="meteo"  class="col-md-12 col-md-12"  ng-controller="meteoController" ng-model="weather">
+                    <div id='meteo_div' class="tweet">
+                        <strong>{{weather.name}} {{weather.sys.country}}</strong><br>
+                        Humidity: {{weather.main.humidity}}<br>
+                        Pressure: {{weather.main.pressure}}<br>
+                        Temperature: {{weather.main.temp}}<br>
+                        Temperature max: {{weather.main.temp_max}}<br>
+                        Temperature min: {{weather.main.temp_min}}<br>
+                        <em><a href="{{imageSourceGif}}" target="_blank">
+					Anime map</a>
+			</em><br>
+                        <em><a href="https://www.google.com/maps/place/{{weather.name}}" target="_blank">
+					View on the map</a>
+			</em><br>
+                        <em><a href="https://www.google.fr/search?q=meteo&oq=meteo+&q=meteo+{{weather.name}}" target="_blank">
+					Google weather for {{weather.name}}</a>
+			</em><br>
+                        <button class="btn btn-default btn-xs" ng-click="getMeteo()" ng-model="status">Reload</button>
+                    </div>
+                    <a href="{{imageSource}}" target="_blank"><img ng-src="{{imageSource}}"/></a>
+                </div>
+            </section>
+            <!-- END METEO -->
+
+            <!-- NOTES -->
+            <section ng-show="showNote" id="notes" class="col-md-12  col-md-12"  ng-controller="notesController">
+                <div >
+                    <ul id="note_list"   class="nav nav-tabs" role="tablist">
+                        <li ng-class="{'active':selectedNote == note_title.id}"  ng-click="getNote(note_title.id)" 
+				ng-repeat="note_title in notes_list" ><a><span >{{note_title.title}}</span></a></li>
+                    </ul>
+                    <div>
+                        <textarea ng-model="note" ></textarea>
+                    </div>
+                    <div>
+                        <form >
+                            <button class="btn btn-warning btn-xs" ng-model="id" ng-click="setNote(id)" >Sauvegarder la note en cours</button>
+                            <button class="btn btn-danger btn-xs" ng-model="id" ng-click="deleteNote(id)"  >Détruire la note en cours</button>
+                            <input placeholder="New note title"  ng-model="title" >
+                            <button class="btn btn-default btn-xs" ng-click="addNote(title)" >Ajouter une nouvelle note</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <!-- END NOTES -->
+
+            <!-- MAIL -->
+            <section  ng-show="showMail" ng-controller="mailsController">
+                <div  class="col-md-12" id="mail" >
+                    <div ng-repeat="mails in accounts" class="col-md-4" >
+                        <h3  ng-click="isMailEditFormOpen = !isMailEditFormOpen" >{{mails.mail_user}}</h3>
+                        <div ng-show="isMailEditFormOpen"  class="tweet">
+                            <form >
+                                <input placeholder="Hostname"  ng-model="hostname" >
+                                <input placeholder="Account"  ng-model="account" >
+                                <input placeholder="Password"  ng-model="password" >
+                                <input placeholder="SSL"  ng-model="ssl" >
+                                <button class="btn btn-default btn-xs" ng-click="" >Update</button>
+                            </form>
+                        </div>
+                        <div  ng-repeat="mail in mails.mail_box.slice().reverse()" >
+                            <div class="tweet">
+                                <span><a href="mailto:{{mail.from}}">{{mail.from}}</a></span> 
+                                <span> to: {{mail.to}}</span>
+                                <div  ng-click="isReplyFormOpen = !isReplyFormOpen" >
+                                    <strong>{{mail.subject}}</strong>
+                                </div>
+                                <div class="depeche" ng-show="isReplyFormOpen" id="replyForm">
+                                    <div>
+                                        {{mail.parts}}
+                                    </div>
+                                    <span> <em>{{mail.date  | moment:'LLL'}}</em></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- END MAIL -->
+
+            <!-- TWITTER -->
+            <section  ng-show="showTwitter" ng-controller="twitterController">
+                <div class="col-md-12">
+                    <span id="twitter"></span>
+                    <div class="tweet ">
+                        <ul>
+                            <li  ng-show="twitterError == 0" class="tweet_menu" ng-class="">
+				    <button class="btn btn-warning btn-xs"  ng-click="checkTwitter()">Refresh</button>
+                            </li>
+                            <li ng-show="twitterError == 0" class="tweet_menu" ng-class="">
+				    <button ng-click="showAll()" class="btn btn-primary btn-xs tweet_menu">All</button>
+                            </li>
+                            <span  ng-repeat="tweet in twitter"  data-ng-switch on="($index) % scale == 0" >
+                                <span  data-ng-switch-when="true" >
+                                <li class="tweet_menu" ng-class="">
+                                    <button ng-click="showTen($index)" class="btn btn-default btn-xs tweet_menu">
+					    <span>{{$index}} - {{$index+scale}}</span>
+				    </button>
+                                </li>
+                                </span>
+                            </span>
+                            <li ng-show="twitterError == 1" class="tweet_menu" ng-class="">
+                                <button ng-click="loginTwitter()" class="btn btn-danger btn-xs tweet_menu">Login</button>
+                                <input ng-model="endTwitter" type="text"/>
+                                <button class="btn btn-danger btn-xs tweet_menu" ng-click="endLoginTwitter()">Send pin code</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class=""  ng-repeat="tweet in twitter"  data-ng-switch on="($index + 1) % 6 == 0 && $index > 0">
+                        <div ng-show="$index >= showStart" ng-class="{hidden: $index >= showEnd}" class="col-md-2 col-sm-2 tweet fix-height" >
+                            <div class="">
+                                <img src="{{tweet.user.profile_image_url_https}}" alt="">
+                            </div>
+                            <span>
+                                <strong>{{tweet.user.name}}</strong>
+                            </span>
+                            <span>
+                                <a href="https://www.twitter.com/{{tweet.user.screen_name}}" target="_blank">@{{tweet.user.screen_name}}</a>
+                            </span>
+                            <div>
+                                {{tweet.text}}
+                            </div>
+                            <div>
+                                <span ng-repeat="mention in tweet.entities.user_mentions">
+                                    <a href="https://www.twitter.com/{{mention.screen_name}}" target="_blank">@{{mention.screen_name}}</a>
+                                </span>
+                                <span ng-repeat="url in tweet.entities.urls">
+                                    <a href="{{url.expanded_url}}" target="_blank">{{url.display_url}}</a> 
+                                </span>
+                                <span ng-repeat="hashtag in tweet.entities.hashtags">
+                                    <a href="https://twitter.com/hashtag/{{hashtag.text}}?f=realtime&src=hash" target="_blank"><em>#{{hashtag.text}}</em></a>
+                                </span>
+                                <div class="view_on_twitter">
+                                    <a href="https://twitter.com/{{tweet.user.screen_name}}/statuses/{{tweet.id_str}}" target="_blank">View on Twitter</a>
+                                </div>
+                                <div class="date">
+                                    <em>{{tweet.created_at | moment:'LLL'}}</em>
+                                </div>
+                                <span ng-repeat="media in tweet.entities.media">
+                                    <a class="tweet_img" href="{{media.media_url_https}}" target="_blank">
+                                        <img src="{{media.media_url_https}}" alt=""></a>
+                                </span>
+                            </div>
+                        </div>
+                        <div data-ng-switch-when="true">
+                            <div  ng-show="$index >= showStart" ng-class="{hidden: $index >= showEnd}"  class="col-xs-12 col-md-12" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- END TWITTER-->
+
+            <!-- START NEWS -->
+            <section  ng-show="showNews"  ng-controller="newsController">
+                <div class="col-sm-12 menu_bar_categories"  id="news">
+                    <ul class="nav nav-tabs " role="tablist">
+                        <li class="my_menu_categories" ng-class="{'active':selectedCategory == category.id}"   id="{{category.name}}" 
+				ng-repeat="category in categories | orderBy:category.id" ng-click="getCategoryFeeds(category.id, category.name)">
+                            <a class="myclick ">{{category.name}}</a>
+                        </li>
+                        <li class="myclick" id="float_right" ng-class="{'active':isSettinsEditFormOpen}"  
+				ng-click="isSettinsEditFormOpen = !isSettinsEditFormOpen" ><a >Settings</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-12 "  ng-show="isSettinsEditFormOpen" >
+                    <div class="tweet">
+                        <div>
+                            <input class="" placeholder="Enter category name" ng-model="newCategoryName" >
+                            <button class="btn btn-default btn-xs" ng-click="newCategory()"  ng-model="newCategoryName">
+				    Create new category
+			    </button>
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Type new name"  ng-model="rename">
+                            <button class="btn btn-default btn-xs" value="{{category.name}}" ng-click="renameCategory(selectedCategoryId, rename)">
+				    Rename category {{selectedCategoryName}}
+			    </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-danger btn-xs" value="{{category.name}}" ng-click="deleteCategory(selectedCategoryId)"  >
+				    Delete category {{selectedCategoryName}}
+			    </button>
+                        </div>
+                        <div>
+                            <input  class="" placeholder="Title: Leave blank to set auto" ng-model="newRssTitle" >
+                            <input  class="" placeholder="Enter new RSS url" ng-model="newRssUrl" >
+                            <select class="btn btn-default btn-xs"
+                                ng-model="newRssUrlCat"
+                                ng-options="category.id as category.name for category in categories" 
+                                >
+                            </select>
+                            <button class="btn btn-default btn-xs" ng-click="newFeed()"  ng-model="newFeed">Add new feed</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3"  id="news_list">
+                    <div class="tweet mywrap" >
+                        <a class="myclick class-with-tooltip" data-title="{{feedsUrl.title}}"  ng-repeat="feedsUrl in feedsList"  
+				ng-click="getFeedList(feedsUrl)">
+                            <!-- <span ng-hide="{{localStorageFeed[feedsUrl.id]}}"><b>/!\</b></span>  -->
+                            * {{feedsUrl.title}}<br>
+                            <!-- {{localStorageFeed[feedsUrl.id]}} | {{feedsUrl}} -->
+                            <!-- {{localStorageFeed}} -->
+                            
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-9 col-xs-12" >
+                    <div class="tweet" ng-hide="">
+                        <select 
+                            data-ng-model="selectedUrl"
+                            data-ng-options="feedsUrl.title  for feedsUrl in feedsList" 
+                            ng-change="getFeedList(selectedUrl)"
+                            >
+                        </select>
+                        <!-- <button class="btn btn-default btn-xs" ng-click="getAllCache()">Get all cache</button> -->
+                    </div>
+                    <div ng-show="newsIsLoading" class="error_msg">
+                        <span class="glyphicon glyphicon-loading"></span>
+                        Loading ...<br>
+                    </div>
+                    <div ng-show="newsError" class="error_msg">
+                        <span  class="glyphicon glyphicon-download"></span>
+                        Error:<br>
+                        {{errorMsg}}
+
+                    </div>
+                    <div ng-hide="newsIsLoading"  class="myclick tweet" ng-repeat="content in contentList.content"  ng-click="showContent(content)">
+                        <a href="{{content.link}}" target="_blank"><span class="glyphicon glyphicon-download"></span></a> 
+                        <span ng-click="isReplyFormOpen = !isReplyFormOpen"  ><strong> {{content.head}}</strong></span>
+                        <!-- <span ng-click="viewLater(content)">View later</span> -->
+                        <div ng-click="isReplyFormOpen = !isReplyFormOpen"  ng-show="isReplyFormOpen" >
+                            {{content.feed}}<br>
+                            <em>{{content.date}}</em>
+                        </div>
+                    </div>
+                    <div class="tweet" >
+                        <div  class="myclick" ng-click="isSettinsEditRssOpen = !isSettinsEditRssOpen" >
+                            Settings
+                        </div>
+                        <div  ng-show="isSettinsEditRssOpen">
+                            <div>
+                                Change category: 
+                                <select  class="btn btn-warning btn-xs " 
+                                    ng-init="category = category || selectedCategoryId"
+                                    ng-model="category"
+                                    ng-options="category.id as category.name for category in categories" 
+                                    ng-change="updateRssCategory(category, contentList.id)"
+                                    >
+                                </select>
+                            </div>
+                            <div>
+                                <button class="btn btn-danger btn-xs" ng-click="deleteFeed(contentList.id)">
+					Delete this rss feed ({{contentList.title}})
+				</button>
+                            </div>
+                            <div>
+                                <input type="text"  value="{{contentList.text}}" placeholder="{{contentList.text}}"  ng-model="updateUrl">
+                                <button class="btn btn-default btn-xs" ng-click="updateRssUrl(contentList.id, updateUrl)" ng-model="updateUrl">
+					Update url
+				</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- END NEWS -->
+            <!-- START ADMIN -->
+            <section  ng-show="showAdmin"   ng-controller="adminController" >
+                Admin
+                <input type="text"  value="twitter_api_key" placeholder="twitter_api_key"  ng-model="twitter_api_key">
+                <input type="text"  value="twitter_api_secret" placeholder="twitter_api_secret"  ng-model="twitter_api_secret">
+                <button class="btn btn-default btn-xs" ng-click="updateTwitterKey(twitter_api_key, twitter_api_secret)" >
+                    Update key
+                </button>
+            </section>
+            <!-- END ADMIN -->
+        </div>
+    </div>
+    <script src="static/jquery-1.11.1.js"></script>
+    <script src="static/jquery.base64.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="static/bootstrap.min.js"></script>
+    <script src="static/moment-with-locales.js"></script>
+    <script src="static/angular.min.js"></script>
+    <script src="static/angular.moment.js"></script>
+    <script src="static/app.js"></script>
+</body>
+</html>
