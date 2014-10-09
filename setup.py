@@ -23,6 +23,7 @@ requires = [
     'six',
     'imap-cli',
     'feedparser',
+    'wsgicors',
 ]
 
 setup(name='PyNews',
