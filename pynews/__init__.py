@@ -70,6 +70,9 @@ def main(global_config, **settings):
 # MAIL
     config.add_route('mail', '/mail')
 
+# IMPORT
+    config.add_route('import_xml', '/import_xml')
+
 # STARTING
     config.scan()
 

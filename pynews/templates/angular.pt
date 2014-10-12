@@ -262,6 +262,16 @@
                             </select>
                             <button class="btn btn-default btn-xs" ng-click="newFeed()"  ng-model="newFeed">Add new feed</button>
                         </div>
+                        <div>
+                            <input id="file" name="file" type="file"  class="" placeholder="Upload XML"  >
+                            <select class="btn btn-default btn-xs"
+                                ng-model="importCat"
+                                ng-options="category.id as category.name for category in categories" 
+                                >
+                            </select>
+
+                            <button class="btn btn-default btn-xs" ng-click="importXml(importCat)" >Import XML file</button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-3"  id="news_list">

@@ -36,19 +36,6 @@ from imap_cli import fetch
 
 # Helper
 
-def import_xml():
-    pass
-    # user = DBSession.query(User).get(1)
-    # category = DBSession.query(Category).get(5)
-    # tree = ET.parse('pynews/__us_rss.xml')
-    # root = tree.getroot()
-    # for child in root[1]:
-    #     print(child.attrib['title'])
-    #     print(child.attrib['xmlUrl'])
-    #     print('\n')
-    #     flux = Flux(user=user, title=child.attrib['title'], text=child.attrib['xmlUrl'], category=[category,])
-    #     DBSession.add(flux)
-    # print('END XML IMPORT')    
 
 def remove_tags(text):
     return ''.join(xml.etree.ElementTree.fromstring(text).itertext())
@@ -120,6 +107,39 @@ def check_user_admin(request):
 
 def import_from_opml(opml_file):
     pass
+
+@view_config(route_name='import_xml', renderer='json')
+def import_xml_view(request):
+    pass
+    # print request
+    # print request.POST
+    # xml_data = request.POST('xml_file')
+    # category_id = request.matchdict.get('category')
+    xml_data = request.json['xml_file']
+    category_id = request.json['category']
+    user = check_user_logged(request)
+    user = get_user_by_username(user)
+    print user
+    # user = DBSession.query(User).get(1)
+    # category = DBSession.query(Category).get(category_id)
+    category = get_category_by_id(category_id)
+    print category
+    # tree = ET.parse(xml_data)
+    # root = tree.getroot()
+    # tree = ET.fromstring(xml_data)
+    # print xml_data
+    root = ET.fromstring(xml_data)
+
+    for child in root[1]:
+        print(child.attrib['title'])
+        print(child.attrib['xmlUrl'])
+        print('\n')
+        rss = Rss(user=user, title=child.attrib['title'], text=child.attrib['xmlUrl'], category=[category,])
+        DBSession.add(rss)
+    print('END XML IMPORT')    
+    return dict(
+        status=0,
+    )
 
 @view_config(route_name='register_api_twitter', renderer='json')
 def register_api_twitter_view(request):

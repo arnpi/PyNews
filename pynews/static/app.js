@@ -434,6 +434,23 @@ $scope.localStorageFeed = {};
         });
     }
 
+    $scope.importXml = function(){
+        var f = document.getElementById('file').files[0],
+        r = new FileReader();
+        r.onloadend = function(e){
+            var xml_file = e.target.result;
+            //send you binary data via $http or $resource or do anything else with it
+            console.log(xml_file);
+            console.log($scope.importCat);
+            $http.post("/import_xml", {xml_file: xml_file, category: $scope.importCat}).success(function(data) {
+                console.log("uploaded");
+            });
+        }
+        r.readAsBinaryString(f);
+    }
+
+
+
     $scope.viewLater = function(obj) {
         var tmp_storage = JSON.parse(localStorage);
         console.log(typeof(tmp_storage));
