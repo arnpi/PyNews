@@ -35,6 +35,21 @@ from imap_cli import fetch
 
 
 # Helper
+
+def import_xml():
+    pass
+    # user = DBSession.query(User).get(1)
+    # category = DBSession.query(Category).get(5)
+    # tree = ET.parse('pynews/__us_rss.xml')
+    # root = tree.getroot()
+    # for child in root[1]:
+    #     print(child.attrib['title'])
+    #     print(child.attrib['xmlUrl'])
+    #     print('\n')
+    #     flux = Flux(user=user, title=child.attrib['title'], text=child.attrib['xmlUrl'], category=[category,])
+    #     DBSession.add(flux)
+    # print('END XML IMPORT')    
+
 def remove_tags(text):
     return ''.join(xml.etree.ElementTree.fromstring(text).itertext())
 
@@ -77,8 +92,6 @@ def check_twitter_logged(request):
     try:
         access_token = DBSession.query(User.access_token).filter_by(username=user).first()
         access_token_secret = DBSession.query(User.access_token_secret).filter_by(username=user).first()
-        print access_token[0]
-        print access_token_secret[0]
         if access_token[0] is None or access_token_secret[0] is None:
             return False
         # session = request.session['end_auth']
@@ -92,13 +105,8 @@ def check_twitter_logged(request):
 
 def check_user_admin(request):
     session = request.session
-    print session['username']
-    print "uuu"
-    # print user
     if session['username']:
-        print "rrr"
         user_id = DBSession.query(User.id).filter_by(username=session['username']).first()
-        print user_id[0]
         session = request.session
         if user_id[0] == 1:
             session['status'] = "admin"
@@ -115,10 +123,8 @@ def import_from_opml(opml_file):
 
 @view_config(route_name='register_api_twitter', renderer='json')
 def register_api_twitter_view(request):
-    print "toto"
     user = check_user_logged(request)
     if check_user_admin(request):
-        print "admin"
         twitter_api_key = request.matchdict.get('twitter_api_key')
         twitter_api_secret = request.matchdict.get('twitter_api_secret')
         DBSession.query(Setting).filter_by(id=1).update({"twitter_api_key": twitter_api_key, "twitter_api_secret": twitter_api_secret})
@@ -151,8 +157,6 @@ def users_add_view(request):
     if check_user_admin(request):
         username = request.matchdict.get('username')
         password = request.matchdict.get('password')
-        print username
-        print password
         same_username = DBSession.query(User).filter_by(username=username).first()
         if same_username:
             return dict(
@@ -211,9 +215,7 @@ def status_login_view(request):
             status=0,
         )
     else:
-        print "aaa"
         if check_user_admin(request):
-            print "ttt"
             status = 2
         else:
             status = 1
@@ -310,7 +312,6 @@ def notes_list_view(request):
         notes_list = []
         for note in notes:
             notes_list.append({'id': note.id, 'text': note.text, 'title': note.title})
-            print note.title
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return dict(
@@ -350,9 +351,6 @@ def categories_add_view(request):
     user = get_user_by_username(user)
     name = request.matchdict.get('name')
     description = 'description'
-    print user
-    print name
-    print description
     same_name = DBSession.query(Category).filter_by(user=user).filter_by(name=name).first()
     if same_name:
         return dict(
@@ -387,7 +385,6 @@ def rsses_add_view(request):
     text = base64.b64decode(text)
     category = request.matchdict.get('category')
     user = get_user_by_username(user)
-    print title + "ttt"
     if title == "1":
         try:
             feeds = feedparser.parse( text )
@@ -724,7 +721,6 @@ def auth_twitter_view(request):
             project= 'PyNews'
         )
     app_twitter_auth = DBSession.query(Setting).all()
-    print app_twitter_auth
     user = get_user_by_username(user)
     token = twittertoken.GenerateToken(app_twitter_auth[0].twitter_api_key, app_twitter_auth[0].twitter_api_secret)
     
@@ -737,7 +733,6 @@ def auth_twitter_view(request):
 
 @view_config(route_name='end_auth_twitter', renderer='json')
 def end_auth_twitter_view(request):
-    print request
     user = check_user_logged(request)
     if user is False:
         return dict(
@@ -818,8 +813,6 @@ def mail_view(request):
     mail_params = DBSession.query(Mail).filter_by(user=user)
     resultat = mail_params.all()
     for el in resultat:
-        pprint(el.hostname)
-
         config_file = 'config-email.ini'
         connect_conf = config.new_context_from_file(config_file, section='imap')
         connect_conf['hostname'] = el.hostname
@@ -835,7 +828,6 @@ def mail_view(request):
                 project= 'PyNews'
             )
 
-        print "#"*10
         count = int(imap_cli.change_dir(imap_account, 'INBOX')[0]) + 10
         response = []
         for ite in xrange(count -10, count):
