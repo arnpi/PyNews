@@ -11,7 +11,7 @@ from sqlalchemy import engine_from_config
 from pyramid.paster import get_appsettings
 from pyramid.paster import setup_logging
 
-from pynews.models import Flux
+from pynews.models import Rss
 from pynews.models import Base
 from pynews.models import DBSession
 # from pynews.models import Group
@@ -65,21 +65,21 @@ def main(argv=sys.argv):
             category = Category(user, name.capitalize(), u'{0} category description'.format(name))
             DBSession.add(category)
 
-    # Populate table fluxes
+    # Populate table rsses
     with transaction.manager:
         user = DBSession.query(User).get(1)
         category = DBSession.query(Category).get(3)
-        flux = Flux(user=user, title=u'Flux #1', text=u'http://www.techno-science.net/include/news.xml', category=[category,])
-        DBSession.add(flux)
+        rss = Rss(user=user, title=u'Rss #1', text=u'http://www.techno-science.net/include/news.xml', category=[category,])
+        DBSession.add(rss)
         category = DBSession.query(Category).get(1)
-        flux = Flux(user=user, title=u'Flux #2', text=u'http://rss.lemonde.fr/c/205/f/3050/index.rss', category=[category,])
-        DBSession.add(flux)
+        rss = Rss(user=user, title=u'Rss #2', text=u'http://rss.lemonde.fr/c/205/f/3050/index.rss', category=[category,])
+        DBSession.add(rss)
         category = DBSession.query(Category).get(1)
-        flux = Flux(user=user, title=u'Flux #3', text=u'http://rss.liberation.fr/rss/9/', category = [category,])
-        DBSession.add(flux)
+        rss = Rss(user=user, title=u'Rss #3', text=u'http://rss.liberation.fr/rss/9/', category = [category,])
+        DBSession.add(rss)
         category = DBSession.query(Category).get(4)
-        flux = Flux(user=user, title=u'Flux #4', text=u'http://feeds2.feedburner.com/LeJournalduGeek', category=[category,])
-        DBSession.add(flux)
+        rss = Rss(user=user, title=u'Rss #4', text=u'http://feeds2.feedburner.com/LeJournalduGeek', category=[category,])
+        DBSession.add(rss)
 
     # Populate table notes
     with transaction.manager:

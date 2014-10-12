@@ -21,7 +21,7 @@ from .models import (
     # Group,
     Category,
     User,
-    Flux,
+    Rss,
     Note,
     Bookmark,
     Mail,
@@ -180,7 +180,9 @@ def login_view(request):
     user = DBSession.query(User).filter_by(username=username).first()
     if user is not None and user.validate_password(password):
         session = request.session
+        cookie = request.cookies
         session['username'] = username
+        cookie['username'] = username
         return dict(
             login=1,
         )
@@ -227,7 +229,7 @@ def categories_list_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     user = get_user_by_username(user)
@@ -244,52 +246,52 @@ def categories_list_view(request):
     )
 
 
-@view_config(route_name='fluxes_list', renderer='json')
-def fluxes_list_view(request):
+@view_config(route_name='rsses_list', renderer='json')
+def rsses_list_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     user = get_user_by_username(user)
     try:
-        fluxes = DBSession.query(Flux.id, Flux.text, Flux.title).filter_by(user=user).all()
+        rsses = DBSession.query(Rss.id, Rss.text, Rss.title).filter_by(user=user).all()
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return dict(
-        fluxes= fluxes,
+        rsses= rsses,
         project= 'PyNews'
     )
 
 
-@view_config(route_name='fluxes_list_by_category', renderer='json')
-def fluxes_list_by_category_view(request):
+@view_config(route_name='rsses_list_by_category', renderer='json')
+def rsses_list_by_category_view(request):
     user = check_user_logged(request)
     category = request.matchdict.get('category')
     category = get_category_by_id(category)
     if category is False:
         return dict(
-            fluxes= "not no such category",
+            rsses= "not no such category",
             project= 'PyNews'
         )
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     user = get_user_by_username(user)
     try:
-        fluxes = DBSession.query(Flux.id, Flux.text, Flux.title).filter_by(user=user)
-        fluxes = fluxes.filter(Flux.category.contains(category))
-        fluxes = fluxes.all()
-        fluxes_list = []
-        for flux in fluxes:
-            fluxes_list.append({'id': flux.id, 'text': flux.text, 'title': flux.title})
+        rsses = DBSession.query(Rss.id, Rss.text, Rss.title).filter_by(user=user)
+        rsses = rsses.filter(Rss.category.contains(category))
+        rsses = rsses.all()
+        rsses_list = []
+        for rss in rsses:
+            rsses_list.append({'id': rss.id, 'text': rss.text, 'title': rss.title})
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return dict(
-        fluxes= fluxes_list,
+        rsses= rsses_list,
         project= 'PyNews'
     )
 
@@ -299,7 +301,7 @@ def notes_list_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     user = get_user_by_username(user)
@@ -322,7 +324,7 @@ def bookmarks_list_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     user = get_user_by_username(user)
@@ -331,7 +333,7 @@ def bookmarks_list_view(request):
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return dict(
-        fluxes= bookmark,
+        rsses= bookmark,
         project= 'PyNews'
     )
 
@@ -342,7 +344,7 @@ def categories_add_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     user = get_user_by_username(user)
@@ -371,12 +373,12 @@ def categories_add_view(request):
     )
 
 
-@view_config(route_name='fluxes_add', renderer='json')
-def fluxes_add_view(request):
+@view_config(route_name='rsses_add', renderer='json')
+def rsses_add_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     title = request.matchdict.get('title')
@@ -404,19 +406,19 @@ def fluxes_add_view(request):
             status= 3,
             project= 'PyNews'
         )
-    # same_flux = DBSession.query(Flux).filter(sa.and_(Flux.text==text, Flux.user==user)).first()
-    # if same_flux:
+    # same_rss = DBSession.query(Rss).filter(sa.and_(Rss.text==text, Rss.user==user)).first()
+    # if same_rss:
     #     return dict(
     #         status= 4,
     #         project= 'PyNews'
     #     )
-    flux = Flux(
+    rss = Rss(
         user,
         title,
         text,
         category_list,
     )
-    DBSession.add(flux)
+    DBSession.add(rss)
     DBSession.flush()
     return dict(
         status= 1,
@@ -429,7 +431,7 @@ def notes_add_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     title = request.matchdict.get('title')
@@ -442,7 +444,7 @@ def notes_add_view(request):
         )
     title = base64.b64decode(title)
     text = base64.b64decode(text)
-    same_note = DBSession.query(Flux).filter(sa.and_(Note.text==text, Note.user==user)).first()
+    same_note = DBSession.query(Rss).filter(sa.and_(Note.text==text, Note.user==user)).first()
     if same_note:
         return dict(
             status= 2,
@@ -466,7 +468,7 @@ def bookmarks_add_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     title = request.matchdict.get('title')
@@ -497,18 +499,18 @@ def bookmarks_add_view(request):
 
 
 # DELETE
-@view_config(route_name='fluxes_delete', renderer='json')
-def fluxes_delete_view(request):
+@view_config(route_name='rsses_delete', renderer='json')
+def rsses_delete_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     id = request.matchdict.get('id')
     user = get_user_by_username(user)
-    flux = DBSession.query(Flux).filter_by(user=user).filter_by(id=id).first()
-    DBSession.delete(flux)
+    rss = DBSession.query(Rss).filter_by(user=user).filter_by(id=id).first()
+    DBSession.delete(rss)
     return dict(
         status= 1,
         project= 'PyNews'
@@ -520,7 +522,7 @@ def categories_delete_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     cat_id = request.matchdict.get('id')
@@ -538,7 +540,7 @@ def notes_delete_view(request):
     user = check_user_logged(request)
     if user is False:
         return dict(
-            fluxes= "not logged",
+            rsses= "not logged",
             project= 'PyNews'
         )
     note_id = request.matchdict.get('id')
@@ -555,7 +557,7 @@ def notes_delete_view(request):
 @view_config(route_name='view_feed', renderer='json')
 def view_feed_view(request):
     feed_requested = request.matchdict.get('feed')
-    rss = DBSession.query(Flux).filter_by(id=feed_requested).first()
+    rss = DBSession.query(Rss).filter_by(id=feed_requested).first()
     rss_id = rss.id
     url = rss.text
     count = rss.count
@@ -666,10 +668,10 @@ def update_rss_category_view(request):
     category_id = request.matchdict.get('category')
     category = DBSession.query(Category).get(category_id)
     rss_id = request.matchdict.get('id')
-    flux = DBSession.query(Flux).get(rss_id)
-    flux.category = [category, ]
+    rss = DBSession.query(Rss).get(rss_id)
+    rss.category = [category, ]
     return dict(
-        response= flux.category[0].id,
+        response= rss.category[0].id,
         project= 'PyNews'
     )
 
@@ -685,7 +687,7 @@ def update_rss_url_view(request):
     rss_id = request.matchdict.get('id_rss')
     rss_url = request.matchdict.get('url')
     rss_url = base64.b64decode(rss_url)
-    rss = DBSession.query(Flux).get(rss_id)
+    rss = DBSession.query(Rss).get(rss_id)
     rss.text = rss_url
     return dict(
         response= rss.id,

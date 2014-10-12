@@ -299,12 +299,12 @@ $scope.localStorageFeed = {};
         $scope.selectedCategory = id;
         $scope.selectedCategoryId = id;
         $scope.selectedCategoryName = name;
-        $http.get('/fluxes_by_category/' + id).success(function(data) {
-            // console.log(data.fluxes);
-            $scope.feedsList = data.fluxes;
-            $scope.getFeedList(data.fluxes[0]);
-            $scope.selectedUrl = data.fluxes[0];
-            return data.fluxes;
+        $http.get('/rsses_by_category/' + id).success(function(data) {
+            // console.log(data.rsses);
+            $scope.feedsList = data.rsses;
+            $scope.getFeedList(data.rsses[0]);
+            $scope.selectedUrl = data.rsses[0];
+            return data.rsses;
         });
     }
 
@@ -379,8 +379,8 @@ $scope.localStorageFeed = {};
     }
 
     $scope.getNewsListByCategory = function(id) {
-        $http.get('/fluxes_by_category/' + id).success(function(data) {
-            return data.fluxes;
+        $http.get('/rsses_by_category/' + id).success(function(data) {
+            return data.rsses;
         });
     }
 
@@ -413,17 +413,17 @@ $scope.localStorageFeed = {};
         if (typeof($scope.newRssTitle) == "undefined" || $scope.newRssTitle == "") {
             title = "1";
         }
-        $http.get('/fluxes/add/' + window.btoa(title) + "/" + window.btoa($scope.newRssUrl) + "/" + $scope.newRssUrlCat).success(function(data) {
+        $http.get('/rsses/add/' + window.btoa(title) + "/" + window.btoa($scope.newRssUrl) + "/" + $scope.newRssUrlCat).success(function(data) {
             $scope.getCategories();
         });
     }
     $scope.deleteFeed = function(id) {
-        $http.get('/fluxes/delete/' + id).success(function(data) {
+        $http.get('/rsses/delete/' + id).success(function(data) {
             $scope.getCategories();
         });
     }
     $scope.updateRssUrl = function(id, url) {
-        // $http.get('/fluxes/delete/' + id).success(function(data) {
+        // $http.get('/rsses/delete/' + id).success(function(data) {
         //     $scope.getCategories();
         // });
         var encodedUrl = window.btoa(url);
@@ -459,10 +459,10 @@ $scope.localStorageFeed = {};
     //     $http.get('/categories/list').success(function(data) {
 
     //         for (var i = data.categories.length - 1; i >= 0; i--) {
-    //             $http.get('/fluxes_by_category/' + data.categories[i].id).success(function(data) {
+    //             $http.get('/rsses_by_category/' + data.categories[i].id).success(function(data) {
 
-    //                 for (var i = data.fluxes.length - 1; i >= 0; i--) {
-    //                     $http.get('/feed/' + data.fluxes[i].id).success(function(data) {
+    //                 for (var i = data.rsses.length - 1; i >= 0; i--) {
+    //                     $http.get('/feed/' + data.rsses[i].id).success(function(data) {
 
     //                         console.log(data.feed);
     //                     });

@@ -36,9 +36,9 @@ def random_string(self, length=10):
         for i in range(0, length)
     )
 
-# flux/category
-flux_category_associations = Table('flux_category_associations', Base.metadata,
-    Column('fluxes_id', Integer, ForeignKey('fluxes.id')),
+# rss/category
+rss_category_associations = Table('rss_category_associations', Base.metadata,
+    Column('rsses_id', Integer, ForeignKey('rsses.id')),
     Column('category_id', Integer, ForeignKey('category.id')),
 )
 
@@ -127,19 +127,19 @@ class User(Base):
         salt, salted = self.password.split(':')
         return self.password == self.__get_salted_hash(password, salt=salt)
 
-# fluxes
-class Flux(Base):
-    __tablename__ = 'fluxes'
+# rsses
+class Rss(Base):
+    __tablename__ = 'rsses'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    user = relation('User', backref='fluxes')
+    user = relation('User', backref='rsses')
     creation_date = Column(DateTime)
     title = Column(Unicode(1024))
     text = Column(Unicode(1024))
     # status = Column(Enum(u'draft', u'published', u'refused'))
     category_id = Column(Integer, ForeignKey('category.id'))
-    category = relation('Category', secondary=flux_category_associations)
+    category = relation('Category', secondary=rss_category_associations)
     count = Column(Integer)
 
     def __init__(self, user, title, text, category, count=20):

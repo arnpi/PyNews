@@ -40,14 +40,14 @@ def main(global_config, **settings):
     config.add_route('categories_delete', '/categories/delete/{id}')
     config.add_route('categories_list', '/categories/list')
 
-# FLUXES
-    config.add_route('fluxes_add', '/fluxes/add/{title}/{text}/{category}')
+# RSSES
+    config.add_route('rsses_add', '/rsses/add/{title}/{text}/{category}')
     config.add_route('view_feed', '/feed/{feed}')
     config.add_route('update_rss_url', '/rss/update/url/{id_rss}/{url}')
     config.add_route('update_rss_category', '/rss/update/category/{category}/{id}')
-    config.add_route('fluxes_delete', '/fluxes/delete/{id}')
-    config.add_route('fluxes_list', '/fluxes/list')
-    config.add_route('fluxes_list_by_category', '/fluxes_by_category/{category}')
+    config.add_route('rsses_delete', '/rsses/delete/{id}')
+    config.add_route('rsses_list', '/rsses/list')
+    config.add_route('rsses_list_by_category', '/rsses_by_category/{category}')
 
 # NOTES
     config.add_route('notes_add', '/notes/add/{title}/{text}')
