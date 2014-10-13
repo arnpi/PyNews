@@ -97,9 +97,9 @@ def main(argv=sys.argv):
 
 
     # Populate table mail
-    with transaction.manager:
-        user = DBSession.query(User).get(1)
-        mail = Mail(user=user, hostname=u'imap.gmx.com', username=u'user@gmx.com', password=u'password', ssl=True, port=993)
-        DBSession.add(mail)
-        mail = Mail(user=user, hostname=u'imap.gmail.com', username=u'user2@gmail.com', password=u'password2', ssl=True, port=993)
-        DBSession.add(mail)
+    # with transaction.manager:
+    #     user = DBSession.query(User).get(1)
+    #     mail = Mail(user=user, hostname=u'imap.gmx.com', username=u'user@gmx.com', password=u'password', ssl=True, port=993)
+    #     DBSession.add(mail)
+    #     mail = Mail(user=user, hostname=u'imap.gmail.com', username=u'user2@gmail.com', password=u'password2', ssl=True, port=993)
+    #     DBSession.add(mail)

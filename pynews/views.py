@@ -123,7 +123,7 @@ def import_xml_view(request):
     # user = DBSession.query(User).get(1)
     # category = DBSession.query(Category).get(category_id)
     category = get_category_by_id(category_id)
-    print category
+    # print category
     # tree = ET.parse(xml_data)
     # root = tree.getroot()
     # tree = ET.fromstring(xml_data)
@@ -131,12 +131,12 @@ def import_xml_view(request):
     root = ET.fromstring(xml_data)
 
     for child in root[1]:
-        print(child.attrib['title'])
-        print(child.attrib['xmlUrl'])
-        print('\n')
+        # print(child.attrib['title'])
+        # print(child.attrib['xmlUrl'])
+        # print('\n')
         rss = Rss(user=user, title=child.attrib['title'], text=child.attrib['xmlUrl'], category=[category,])
         DBSession.add(rss)
-    print('END XML IMPORT')    
+    # print('END XML IMPORT')    
     return dict(
         status=0,
     )
@@ -385,6 +385,58 @@ def categories_add_view(request):
         )
         DBSession.add(category)
         DBSession.flush()
+    return dict(
+        status= 1,
+        project= 'PyNews'
+    )
+
+# ADD
+@view_config(route_name='mailbox_add', renderer='json')
+def mailbox_add_view(request):
+    user = check_user_logged(request)
+    if user is False:
+        return dict(
+            rsses= "not logged",
+            project= 'PyNews'
+        )
+    user = get_user_by_username(user)
+    hostname = request.matchdict.get('hostname')
+    username = request.matchdict.get('account')
+    password = request.matchdict.get('password')
+    # print hostname
+    # print username
+    # print password
+    mail = Mail(user=user, hostname=hostname, username=username, password=password, ssl=True, port=993)
+    DBSession.add(mail)
+    DBSession.flush()
+    return dict(
+        status= 1,
+        project= 'PyNews'
+    )
+
+@view_config(route_name='mailbox_update', renderer='json')
+def mailbox_update_view(request):
+    user = check_user_logged(request)
+    if user is False:
+        return dict(
+            rsses= "not logged",
+            project= 'PyNews'
+        )
+    user = get_user_by_username(user)
+    hostname = request.matchdict.get('update_hostname')
+    username = request.matchdict.get('update_account')
+    password = request.matchdict.get('update_password')
+    print hostname
+    print username
+    print password
+    DBSession.query(Mail).filter_by(user=user).filter_by(username=username).update({"hostname": hostname})
+    if password != "0":
+        DBSession.query(Mail).filter_by(user=user).filter_by(username=username).update({"password": password})
+
+    # DBSession.query(Category).filter_by(user=user).filter_by(id=category_id).update({"name": name.capitalize()})
+    # mail = Mail(user=user, hostname=hostname, username=username, password=password, ssl=True, port=993)
+    # DBSession.add(mail)
+    DBSession.flush()
     return dict(
         status= 1,
         project= 'PyNews'
@@ -836,31 +888,37 @@ def mail_view(request):
         config_file = 'config-email.ini'
         connect_conf = config.new_context_from_file(config_file, section='imap')
         connect_conf['hostname'] = el.hostname
+        print el.hostname
         connect_conf['password'] = el.password
         connect_conf['username'] = el.username
         connect_conf['ssl'] = el.ssl
         connect_conf['port'] = el.port
+        response = []
         try:
             imap_account =  imap_cli.connect(**connect_conf)
+            print imap_cli.change_dir(imap_account, 'INBOX')
+            count = int(imap_cli.change_dir(imap_account, 'INBOX'))
+            print count
+            for ite in xrange(count -10, count +20):
+                mail_response = dict()
+                # mail = fetch.read(imap_account, ite, directory="INBOX")
+                try:
+                    mail = fetch.read(imap_account, ite, directory="INBOX")
+                    # print ite
+                    # print mail['headers']['Subject']
+                    mail_response['from'] = mail['headers']['From']
+                    mail_response['to'] = mail['headers']['To']
+                    mail_response['date'] = mail['headers']['Date']
+                    mail_response['subject'] = mail['headers']['Subject']
+                    mail_response['parts'] = mail['parts'][0]['as_string']
+                    response.append(mail_response)                
+                except Exception, e:
+                    # print ite
+                    pass
+            imap_cli.disconnect(imap_account)
         except Exception, e:
-            return dict(
-                mails= ["Error while connecting to imap server"],
-                project= 'PyNews'
-            )
-
-        count = int(imap_cli.change_dir(imap_account, 'INBOX')[0]) + 10
-        response = []
-        for ite in xrange(count -10, count):
-            mail_response = dict()
-            mail = fetch.read(imap_account, ite, directory="INBOX")
-            mail_response['from'] = mail['headers']['From']
-            mail_response['to'] = mail['headers']['To']
-            mail_response['date'] = mail['headers']['Date']
-            mail_response['subject'] = mail['headers']['Subject']
-            mail_response['parts'] = mail['parts'][0]['as_string']
-            response.append(mail_response)
-        imap_cli.disconnect(imap_account)
-        result.append({"mail_user": connect_conf['username'], "mail_box": response})
+            pass
+        result.append({"mail_user": connect_conf['username'], "hostname": connect_conf['hostname'], "mail_box": response})
     return dict(
         mails= result,
         project= 'PyNews'

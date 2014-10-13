@@ -120,11 +120,9 @@
                         <h3  ng-click="isMailEditFormOpen = !isMailEditFormOpen" >{{mails.mail_user}}</h3>
                         <div ng-show="isMailEditFormOpen"  class="tweet">
                             <form >
-                                <input placeholder="Hostname"  ng-model="hostname" >
-                                <input placeholder="Account"  ng-model="account" >
-                                <input placeholder="Password"  ng-model="password" >
-                                <input placeholder="SSL"  ng-model="ssl" >
-                                <button class="btn btn-default btn-xs" ng-click="" >Update</button>
+                                <input placeholder="{{mails.hostname}}"   ng-model="update_hostname" >
+                                <input type="password" placeholder="Password"  ng-model="update_password" >
+                                <button class="btn btn-default btn-xs" ng-click="updateMailbox(update_hostname, mails.mail_user, update_password)" >Update</button>
                             </form>
                         </div>
                         <div  ng-repeat="mail in mails.mail_box.slice().reverse()" >
@@ -142,6 +140,23 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                        <span ng-click="getMails()" >Refresh mailbox</span>
+                    <span ng-click="isNewMailEditFormOpen = !isNewMailEditFormOpen" >New mailbox</span>
+                    <div ng-show="!isNewMailEditFormOpen"  class="tweet">
+                        <form >
+                            <input placeholder="Hostname"  ng-model="hostname" >
+                            <input placeholder="Account"  ng-model="account" >
+                            <input type="password" placeholder="Password"  ng-model="password" >
+                            <button class="btn btn-default btn-xs" ng-click="newMailbox(hostname, account, password)" >Update</button>
+                        </form>
                     </div>
                 </div>
             </section>

@@ -94,8 +94,27 @@ app.controller('adminController', ['$scope', '$rootScope', '$http', function($sc
 
 app.controller('mailsController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http, $interval) {
 
-    $scope.getMails = function() {
+    $scope.newMailbox = function() {
+        $http.get('/mailbox_add/' + $scope.hostname + "/" + $scope.account + "/" + $scope.password).success(function(data) {
+            console.log('mailbox add');
+            $scope.getMails();
+        });
+    }
+        
+    $scope.updateMailbox = function(update_hostname, update_account, update_password) {
+        if (typeof(update_hostname) == "undefined" || update_hostname == "") {
+            return
+        }
+        if (typeof(update_password) == "undefined" || update_password == "") {
+            update_password = "0";
+        }
+        $http.get('/mailbox_update/' + update_hostname + "/" + update_account + "/" + update_password).success(function(data) {
+            console.log('mailbox update');
+            // $scope.getMails();
+        });
+    }
 
+    $scope.getMails = function() {
         $http.get('/mail').success(function(data) {
             $scope.accounts = data.mails;
             console.log(data);
@@ -126,9 +145,10 @@ app.controller('mailsController', ['$scope', '$rootScope', '$http', function($sc
 
 app.controller('meteoController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http, $interval) {
     
-    delete $http.defaults.headers.common['X-Requested-With'];
+    
 
     $scope.getMeteo = function() {
+        delete $http.defaults.headers.common['X-Requested-With'];
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position){
                 var latitude = position.coords.latitude;

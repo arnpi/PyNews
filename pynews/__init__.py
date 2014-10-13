@@ -69,6 +69,8 @@ def main(global_config, **settings):
 
 # MAIL
     config.add_route('mail', '/mail')
+    config.add_route('mailbox_add', '/mailbox_add/{hostname}/{account}/{password}')
+    config.add_route('mailbox_update', '/mailbox_update/{update_hostname}/{update_account}/{update_password}')
 
 # IMPORT
     config.add_route('import_xml', '/import_xml')
