@@ -315,7 +315,7 @@
                         <span class="glyphicon glyphicon-loading"></span>
                         Loading ...<br>
                     </div>
-                    <div ng-show="newsError" class="error_msg">
+                    <div ng-show="newsError" class="tweet error_msg">
                         <span  class="glyphicon glyphicon-download"></span>
                         Error:<br>
                         {{errorMsg}}
