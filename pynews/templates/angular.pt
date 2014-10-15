@@ -103,7 +103,7 @@
                     <div>
                         <textarea ng-model="note" ></textarea>
                     </div>
-                    <div>
+                    <div class="tweet">
                         <form >
                             <button class="btn btn-warning btn-xs" ng-model="id" ng-click="setNote(id)" >Sauvegarder la note en cours</button>
                             <button class="btn btn-danger btn-xs" ng-model="id" ng-click="deleteNote(id)"  >Détruire la note en cours</button>
@@ -363,7 +363,9 @@
             <!-- START ADMIN -->
             <section  ng-show="showAdmin"   ng-controller="adminController" >
               <div class="tweet" >
-                Admin
+                <h2>Admin</h2>
+                <h3>Twitter</h3>
+                
                 <input type="text"  value="twitter_api_key" placeholder="twitter_api_key"  ng-model="twitter_api_key">
                 <input type="text"  value="twitter_api_secret" placeholder="twitter_api_secret"  ng-model="twitter_api_secret">
                 <button class="btn btn-default btn-xs" ng-click="updateTwitterKey(twitter_api_key, twitter_api_secret)" >
