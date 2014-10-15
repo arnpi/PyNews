@@ -180,6 +180,9 @@
                                 </li>
                                 </span>
                             </span>
+                            <li  ng-show="twitterError == 0" class="tweet_menu" ng-class="">
+				    <button class="btn btn-warning btn-xs"  ng-click="logoutTwitter()">Logout Twitter</button>
+                            </li>
                             <li ng-show="twitterError == 1" class="tweet_menu" ng-class="">
                                 <button ng-click="loginTwitter()" class="btn btn-danger btn-xs tweet_menu">Login</button>
                                 <input ng-model="endTwitter" type="text"/>
