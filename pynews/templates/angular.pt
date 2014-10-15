@@ -94,10 +94,12 @@
             <!-- NOTES -->
             <section ng-show="showNote" id="notes" class="col-md-12  col-md-12"  ng-controller="notesController">
                 <div >
+                  <div class="tweet">
                     <ul id="note_list"   class="nav nav-tabs" role="tablist">
                         <li ng-class="{'active':selectedNote == note_title.id}"  ng-click="getNote(note_title.id)" 
 				ng-repeat="note_title in notes_list" ><a><span >{{note_title.title}}</span></a></li>
                     </ul>
+                  </div>
                     <div>
                         <textarea ng-model="note" ></textarea>
                     </div>
@@ -117,7 +119,7 @@
             <section  ng-show="showMail" ng-controller="mailsController">
                 <div  class="col-md-12" id="mail" >
                     <div ng-repeat="mails in accounts" class="col-md-4" >
-                        <h3  ng-click="isMailEditFormOpen = !isMailEditFormOpen" >{{mails.mail_user}}</h3>
+                        <h3  class="tweet" ng-click="isMailEditFormOpen = !isMailEditFormOpen" >{{mails.mail_user}}</h3>
                         <div ng-show="isMailEditFormOpen"  class="tweet">
                             <form >
                                 <input placeholder="{{mails.hostname}}"   ng-model="update_hostname" >
@@ -141,22 +143,17 @@
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                        <span ng-click="getMails()" >Refresh mailbox</span>
-                    <span ng-click="isNewMailEditFormOpen = !isNewMailEditFormOpen" >New mailbox</span>
-                    <div ng-show="!isNewMailEditFormOpen"  class="tweet">
+                    <div class="tweet" >
+                      <button class="btn btn-default btn-xs" ng-click="getMails()" >Refresh mailbox</button>
+                      <button class="btn btn-default btn-xs" ng-click="isNewMailEditFormOpen = !isNewMailEditFormOpen" >New mailbox</button>
+                      <div ng-show="isNewMailEditFormOpen"  class="tweet">
                         <form >
                             <input placeholder="Hostname"  ng-model="hostname" >
                             <input placeholder="Account"  ng-model="account" >
                             <input type="password" placeholder="Password"  ng-model="password" >
-                            <button class="btn btn-default btn-xs" ng-click="newMailbox(hostname, account, password)" >Update</button>
+                            <button class="btn btn-default btn-xs" ng-click="newMailbox(hostname, account, password)" >Create</button>
                         </form>
+                      </div>
                     </div>
                 </div>
             </section>
@@ -237,7 +234,8 @@
 
             <!-- START NEWS -->
             <section  ng-show="showNews"  ng-controller="newsController">
-                <div class="col-sm-12 menu_bar_categories"  id="news">
+                <div class="col-sm-12 menu_bar_categories"   id="news">
+                  <div class="tweet" >
                     <ul class="nav nav-tabs " role="tablist">
                         <li class="my_menu_categories" ng-class="{'active':selectedCategory == category.id}"   id="{{category.name}}" 
 				ng-repeat="category in categories | orderBy:category.id" ng-click="getCategoryFeeds(category.id, category.name)">
@@ -247,6 +245,7 @@
 				ng-click="isSettinsEditFormOpen = !isSettinsEditFormOpen" ><a >Settings</a>
                         </li>
                     </ul>
+                  </div>
                 </div>
                 <div class="col-sm-12 "  ng-show="isSettinsEditFormOpen" >
                     <div class="tweet">
@@ -311,7 +310,7 @@
                         </select>
                         <!-- <button class="btn btn-default btn-xs" ng-click="getAllCache()">Get all cache</button> -->
                     </div>
-                    <div ng-show="newsIsLoading" class="error_msg">
+                    <div ng-show="newsIsLoading" class="tweet error_msg">
                         <span class="glyphicon glyphicon-loading"></span>
                         Loading ...<br>
                     </div>
@@ -363,12 +362,14 @@
             <!-- END NEWS -->
             <!-- START ADMIN -->
             <section  ng-show="showAdmin"   ng-controller="adminController" >
+              <div class="tweet" >
                 Admin
                 <input type="text"  value="twitter_api_key" placeholder="twitter_api_key"  ng-model="twitter_api_key">
                 <input type="text"  value="twitter_api_secret" placeholder="twitter_api_secret"  ng-model="twitter_api_secret">
                 <button class="btn btn-default btn-xs" ng-click="updateTwitterKey(twitter_api_key, twitter_api_secret)" >
                     Update key
                 </button>
+              </div>
             </section>
             <!-- END ADMIN -->
         </div>
