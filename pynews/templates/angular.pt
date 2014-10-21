@@ -46,6 +46,8 @@
                              ng-class="{selected: status == '2'} "
                     ng-click="showDiv('admin')">Admin</a>
             </li>
+                    <li><a><span>{{heure  | moment:'LLL'}}</span></a></li>
+            <!--<li><a><span>{{heure}}</span></a></li>-->
                     </ul>
                     <div class="nav navbar-nav navbar-right">
                         <!-- LOGIN -->

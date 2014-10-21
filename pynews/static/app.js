@@ -8,6 +8,13 @@ var app = angular.module('myTestApp', ['angularMoment']).constant('angularMoment
 });;;;
 
 app.controller('loginController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http, $interval) {
+    setInterval(function(){
+        $scope.$apply(function() {
+        var heure = new Date();
+        $rootScope.heure = heure;
+        });
+    }, 30000);
+
 
     $rootScope.showDiv = function(type_div) {
         $rootScope.showMeteo = false;
@@ -129,10 +136,10 @@ app.controller('mailsController', ['$scope', '$rootScope', '$http', function($sc
         });
     }
 
-    //if ($rootScope.showMail == true) {
+    if ($rootScope.showMail == true) {
         $scope.getMails();
-    //}
-    setInterval(function(){
+    }
+/*    setInterval(function(){
         $scope.$apply(function() {
         if ($rootScope.showMail == true) {
                 console.log('mails refresh');
@@ -140,7 +147,7 @@ app.controller('mailsController', ['$scope', '$rootScope', '$http', function($sc
             }
         });
     }, 120000);
-
+*/
 }]);
 
 app.controller('meteoController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http, $interval) {
@@ -284,11 +291,11 @@ app.controller('twitterController', ['$scope', '$rootScope', '$http', function($
         $scope.showEnd = $scope.count;
     }
 
-    //if($rootScope.showTwitter) {
+    if($rootScope.showTwitter) {
          $scope.checkTwitter();
          $scope.select = 1;
-    //}
-    setInterval(function(){
+    }
+    /*setInterval(function(){
         $scope.$apply(function() {
             if($rootScope.showTwitter) {
                 console.log('twitter refresh');
@@ -296,7 +303,7 @@ app.controller('twitterController', ['$scope', '$rootScope', '$http', function($
             }
         });
     }, 120000);
-
+*/
 }]);
 
 app.controller('newsController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http, $interval) {
